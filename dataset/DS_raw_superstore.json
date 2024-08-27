@@ -1,0 +1,19 @@
+{
+	"name": "DS_raw_superstore",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase_assessment",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "superStore"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "raw",
+			"table": "superstore"
+		}
+	}
+}

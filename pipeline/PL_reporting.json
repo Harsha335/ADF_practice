@@ -1,9 +1,9 @@
 {
-	"name": "pipeline1",
+	"name": "PL_reporting",
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Data flow for reporting",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -15,6 +15,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_reporting",
+						"type": "DataFlowReference"
+					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"

@@ -1,0 +1,19 @@
+{
+	"name": "DS_azure_reporting_result",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase_assessment",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "azure_tables/reporting_tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "reporting",
+			"table": "result"
+		}
+	}
+}

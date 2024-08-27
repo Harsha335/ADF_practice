@@ -1,5 +1,5 @@
 {
-	"name": "PL_master",
+	"name": "PL_master_assessment1",
 	"properties": {
 		"activities": [
 			{
@@ -36,29 +36,6 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "PL_azure_main",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
-			},
-			{
-				"name": "Execute Pipeline3",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Execute Pipeline2",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "PL_alterOrders",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true

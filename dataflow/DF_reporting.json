@@ -1,16 +1,113 @@
 {
-	"name": "dataflow1",
+	"name": "DF_reporting",
 	"properties": {
 		"folder": {
 			"name": "prepToReporting"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_azure_prep_orders",
+						"type": "DatasetReference"
+					},
+					"name": "prepOrders"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_azure_prep_customer",
+						"type": "DatasetReference"
+					},
+					"name": "prepCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_azure_reporting_result",
+						"type": "DatasetReference"
+					},
+					"name": "sinkToReporting"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinOrdersAndCustomers",
+					"description": "left join on 'prepOrders' and 'prepCustomer'"
+				},
+				{
+					"name": "removeRepeatedCustomerIdCol",
+					"description": "PhoneNumber, Address, City, State, ZipCode, Country'"
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          OrderID as string,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Quantity as string,",
+				"          OrderTimestamp as string,",
+				"          Price as string,",
+				"          CustomerID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> prepOrders",
+				"source(output(",
+				"          CustomerID as string,",
+				"          FirstName as string,",
+				"          LastName as string,",
+				"          Email as string,",
+				"          PhoneNumber as string,",
+				"          Address as string,",
+				"          City as string,",
+				"          State as string,",
+				"          ZipCode as string,",
+				"          Country as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> prepCustomer",
+				"prepOrders, prepCustomer join(prepOrders@CustomerID == prepCustomer@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinOrdersAndCustomers",
+				"joinOrdersAndCustomers select(mapColumn(",
+				"          OrderID,",
+				"          ProductID,",
+				"          ProductName,",
+				"          Quantity,",
+				"          OrderTimestamp,",
+				"          Price,",
+				"          CustomerID = prepOrders@CustomerID,",
+				"          CustomerID = prepCustomer@CustomerID,",
+				"          FirstName,",
+				"          LastName,",
+				"          Email,",
+				"          PhoneNumber,",
+				"          Address,",
+				"          City,",
+				"          State,",
+				"          ZipCode,",
+				"          Country",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> removeRepeatedCustomerIdCol",
+				"removeRepeatedCustomerIdCol sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkToReporting"
 			]
 		}
 	}
