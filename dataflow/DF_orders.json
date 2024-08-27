@@ -1,0 +1,71 @@
+{
+	"name": "DF_orders",
+	"properties": {
+		"description": "This a practice section to do with orders",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Azure_orders",
+						"type": "DatasetReference"
+					},
+					"name": "ordersTable"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Azure_updated_orders",
+						"type": "DatasetReference"
+					},
+					"name": "sinkToDB",
+					"description": "sinking updated values into SQL server"
+				}
+			],
+			"transformations": [
+				{
+					"name": "unitPrice",
+					"description": "creating a unit price for each product"
+				},
+				{
+					"name": "increaseQuantity",
+					"description": "increase quantity by 1"
+				},
+				{
+					"name": "updatedPrice",
+					"description": "updating price as per quantity of the product"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OrderID as string,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Quantity as string,",
+				"          OrderTimestamp as string,",
+				"          Price as string,",
+				"          CustomerID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ordersTable",
+				"ordersTable derive(unit_price = toFloat(Price)/toFloat(Quantity)) ~> unitPrice",
+				"unitPrice derive(Quantity = toInteger(Quantity)+1) ~> increaseQuantity",
+				"increaseQuantity derive(Price = Quantity*unit_price) ~> updatedPrice",
+				"updatedPrice sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkToDB"
+			]
+		}
+	}
+}
