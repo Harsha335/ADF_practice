@@ -1,0 +1,97 @@
+{
+	"name": "DF_orders_rawToPrep",
+	"properties": {
+		"folder": {
+			"name": "rawToPrep"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_azure_raw_orders",
+						"type": "DatasetReference"
+					},
+					"name": "rawOrderDetails"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_azure_prep_orders",
+						"type": "DatasetReference"
+					},
+					"name": "sinkToPrep",
+					"description": "Add sink dataset"
+				}
+			],
+			"transformations": [
+				{
+					"name": "countDupRecords"
+				},
+				{
+					"name": "filterDupRecords"
+				},
+				{
+					"name": "RemoveRank",
+					"description": "remove rank"
+				},
+				{
+					"name": "cleanOrderTimestamp",
+					"description": "cleaning OrderTimestamp col"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OrderID as string,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Quantity as string,",
+				"          OrderTimestamp as string,",
+				"          Price as string,",
+				"          CustomerID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> rawOrderDetails",
+				"rawOrderDetails window(over(OrderID),",
+				"     asc(OrderID, true),",
+				"     Rank = rowNumber()) ~> countDupRecords",
+				"countDupRecords filter(Rank == 1) ~> filterDupRecords",
+				"filterDupRecords select(mapColumn(",
+				"          OrderID,",
+				"          ProductID,",
+				"          ProductName,",
+				"          Quantity,",
+				"          OrderTimestamp,",
+				"          Price,",
+				"          CustomerID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RemoveRank",
+				"RemoveRank derive(OrderTimestamp = iifNull(OrderTimestamp, toString(currentUTC()), OrderTimestamp)) ~> cleanOrderTimestamp",
+				"cleanOrderTimestamp sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          OrderID as string,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Quantity as string,",
+				"          OrderTimestamp as string,",
+				"          Price as string,",
+				"          CustomerID as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkToPrep"
+			]
+		}
+	}
+}

@@ -1,19 +1,19 @@
 {
-	"name": "Azure_customer",
+	"name": "DS_azure_raw_customer",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSqlDatabase1",
+			"referenceName": "AzureSqlDatabase_assessment",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "azure_tables"
+			"name": "azure_tables/raw_tables"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
 			"schema": "raw",
-			"table": "customer"
+			"table": "customerDetails"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"

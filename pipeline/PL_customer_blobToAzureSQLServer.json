@@ -1,9 +1,9 @@
 {
-	"name": "PL_Azure_customer",
+	"name": "PL_customer_blobToAzureSQLServer",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy data for customer",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -57,14 +57,14 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Azure_customer",
+						"referenceName": "DS_azure_raw_customer",
 						"type": "DatasetReference"
 					}
 				]
 			}
 		],
 		"folder": {
-			"name": "consolidated to Azure"
+			"name": "Azure DB tables/raw_tables"
 		},
 		"annotations": [],
 		"lastPublishTime": "2024-08-27T07:46:02Z"

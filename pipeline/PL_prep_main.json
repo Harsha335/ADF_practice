@@ -1,9 +1,9 @@
 {
-	"name": "PL_consolidated_main",
+	"name": "PL_prep_main",
 	"properties": {
 		"activities": [
 			{
-				"name": "Customer Pipeline",
+				"name": "Execute customer Pipeline",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -12,18 +12,18 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "PL_customer_toConsolidate",
+						"referenceName": "PL_customer_rawToPrep",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "Orders Pipeline",
+				"name": "Execute orders Pipeline",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Customer Pipeline",
+						"activity": "Execute customer Pipeline",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -35,7 +35,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "PL_Orders_toConsolidate",
+						"referenceName": "PL_orders_rawToPrep",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -43,10 +43,8 @@
 			}
 		],
 		"folder": {
-			"name": "inputFiles to consolidatedFiles"
+			"name": "Azure DB tables/prep_tables"
 		},
-		"annotations": [],
-		"lastPublishTime": "2024-08-27T07:46:03Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"annotations": []
+	}
 }

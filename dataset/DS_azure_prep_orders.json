@@ -1,0 +1,48 @@
+{
+	"name": "DS_azure_prep_orders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase_assessment",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "azure_tables/prep_tables"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "OrderID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ProductID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ProductName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Quantity",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrderTimestamp",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Price",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomerID",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "prep",
+			"table": "orderDetails"
+		}
+	}
+}

@@ -1,9 +1,9 @@
 {
-	"name": "PL_Orders",
+	"name": "PL_Orders_toConsolidate",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Consolidate Order details",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -48,7 +48,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_orders",
+						"referenceName": "DS_input_orders",
 						"type": "DatasetReference"
 					}
 				],
@@ -61,7 +61,7 @@
 			}
 		],
 		"folder": {
-			"name": "input to consolidated"
+			"name": "inputFiles to consolidatedFiles"
 		},
 		"annotations": [],
 		"lastPublishTime": "2024-08-27T07:46:02Z"

@@ -1,5 +1,5 @@
 {
-	"name": "DF_orders",
+	"name": "DF_alter_orders",
 	"properties": {
 		"description": "This a practice section to do with orders",
 		"type": "MappingDataFlow",
@@ -7,7 +7,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Azure_orders",
+						"referenceName": "DS_azure_raw_orders",
 						"type": "DatasetReference"
 					},
 					"name": "ordersTable"

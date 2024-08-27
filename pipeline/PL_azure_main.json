@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Execute Pipeline1",
+				"name": "Execute raw_tables pipeline",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -12,30 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "PL_Azure_customer",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
-			},
-			{
-				"name": "Execute Pipeline2",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Execute Pipeline1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "PL_Azure_orders",
+						"referenceName": "PL_raw_main",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -43,7 +20,7 @@
 			}
 		],
 		"folder": {
-			"name": "consolidated to Azure"
+			"name": "Azure DB tables"
 		},
 		"annotations": [],
 		"lastPublishTime": "2024-08-27T07:46:03Z"

@@ -1,10 +1,9 @@
 {
-	"name": "PL_alterOrders",
+	"name": "PL_customer_rawToPrep",
 	"properties": {
-		"description": "updating orders table",
 		"activities": [
 			{
-				"name": "alterOrders",
+				"name": "Data flow for curstomer",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -17,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_alter_orders",
+						"referenceName": "DF_customer_rawToPrep",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -29,10 +28,8 @@
 			}
 		],
 		"folder": {
-			"name": "Alter Orders table"
+			"name": "Azure DB tables/prep_tables"
 		},
-		"annotations": [],
-		"lastPublishTime": "2024-08-27T05:35:27Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"annotations": []
+	}
 }

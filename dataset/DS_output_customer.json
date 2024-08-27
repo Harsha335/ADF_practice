@@ -2,7 +2,7 @@
 	"name": "DS_output_customer",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "LS_blob_storage",
+			"referenceName": "LS_assessment_blob_storage",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -13,7 +13,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "customer",
+				"fileName": "customer.csv",
+				"folderPath": "customer_details",
 				"container": "consolidated-container"
 			},
 			"columnDelimiter": ",",

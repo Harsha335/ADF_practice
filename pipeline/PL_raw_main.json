@@ -1,9 +1,11 @@
 {
-	"name": "PL_consolidated_main",
+	"name": "PL_raw_main",
 	"properties": {
+		"description": "This is the main pipeline to execute all raw table creation",
 		"activities": [
 			{
-				"name": "Customer Pipeline",
+				"name": "Execute customer blobToSQLserver",
+				"description": "Execute customer blob To SQL server",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -12,18 +14,19 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "PL_customer_toConsolidate",
+						"referenceName": "PL_customer_blobToAzureSQLServer",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "Orders Pipeline",
+				"name": "Execute orders blobToSQLserver",
+				"description": "Execute orders blob To SQL server",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Customer Pipeline",
+						"activity": "Execute customer blobToSQLserver",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -35,7 +38,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "PL_Orders_toConsolidate",
+						"referenceName": "PL_orders_blobToAzureSQLServer",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -43,10 +46,8 @@
 			}
 		],
 		"folder": {
-			"name": "inputFiles to consolidatedFiles"
+			"name": "Azure DB tables/raw_tables"
 		},
-		"annotations": [],
-		"lastPublishTime": "2024-08-27T07:46:03Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"annotations": []
+	}
 }

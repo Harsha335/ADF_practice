@@ -1,19 +1,19 @@
 {
-	"name": "Azure_orders",
+	"name": "DS_azure_raw_orders",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSqlDatabase1",
+			"referenceName": "AzureSqlDatabase_assessment",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "azure_tables"
+			"name": "azure_tables/raw_tables"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
 			"schema": "raw",
-			"table": "orders"
+			"table": "orderDetails"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"

@@ -1,9 +1,9 @@
 {
-	"name": "PL_customer",
+	"name": "PL_customer_toConsolidate",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy-customers",
+				"name": "Consolidate Customer details",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -51,7 +51,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_customers",
+						"referenceName": "DS_input_customers",
 						"type": "DatasetReference"
 					}
 				],
@@ -64,7 +64,7 @@
 			}
 		],
 		"folder": {
-			"name": "input to consolidated"
+			"name": "inputFiles to consolidatedFiles"
 		},
 		"annotations": [],
 		"lastPublishTime": "2024-08-27T07:46:02Z"

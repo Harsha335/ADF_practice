@@ -1,0 +1,106 @@
+{
+	"name": "DF_customer_rawToPrep",
+	"properties": {
+		"folder": {
+			"name": "rawToPrep"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_azure_raw_customer",
+						"type": "DatasetReference"
+					},
+					"name": "rawCusomerDetails"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_azure_prep_customer",
+						"type": "DatasetReference"
+					},
+					"name": "sinkToPrep"
+				}
+			],
+			"transformations": [
+				{
+					"name": "countDupRecords"
+				},
+				{
+					"name": "removeDuplicate"
+				},
+				{
+					"name": "removeRank",
+					"description": "remove rank col"
+				},
+				{
+					"name": "CleaningRawTable",
+					"description": "Replace LastName column with empty space if it has a null value\nReplace PhoneNumber column with 0000-0000 if it has a null value"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as string,",
+				"          FirstName as string,",
+				"          LastName as string,",
+				"          Email as string,",
+				"          PhoneNumber as string,",
+				"          Address as string,",
+				"          City as string,",
+				"          State as string,",
+				"          ZipCode as string,",
+				"          Country as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> rawCusomerDetails",
+				"rawCusomerDetails window(over(CustomerID),",
+				"     asc(CustomerID, true),",
+				"     Rank = rowNumber()) ~> countDupRecords",
+				"countDupRecords filter(Rank == 1) ~> removeDuplicate",
+				"removeDuplicate select(mapColumn(",
+				"          CustomerID,",
+				"          FirstName,",
+				"          LastName,",
+				"          Email,",
+				"          PhoneNumber,",
+				"          Address,",
+				"          City,",
+				"          State,",
+				"          ZipCode,",
+				"          Country",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> removeRank",
+				"removeRank derive(LastName = iif(LastName == 'NULL', '', LastName),",
+				"          PhoneNumber = iif(isNull(PhoneNumber) || PhoneNumber == 'NULL', '0000-0000', PhoneNumber)) ~> CleaningRawTable",
+				"CleaningRawTable sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CustomerID as string,",
+				"          FirstName as string,",
+				"          LastName as string,",
+				"          Email as string,",
+				"          PhoneNumber as string,",
+				"          Address as string,",
+				"          City as string,",
+				"          State as string,",
+				"          ZipCode as string,",
+				"          Country as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkToPrep"
+			]
+		}
+	}
+}

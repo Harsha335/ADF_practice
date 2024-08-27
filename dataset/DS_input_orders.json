@@ -1,8 +1,8 @@
 {
-	"name": "DS_orders",
+	"name": "DS_input_orders",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "LS_blob_storage",
+			"referenceName": "LS_assessment_blob_storage",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {

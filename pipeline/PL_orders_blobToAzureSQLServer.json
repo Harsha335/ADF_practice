@@ -1,9 +1,9 @@
 {
-	"name": "PL_Azure_orders",
+	"name": "PL_orders_blobToAzureSQLServer",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy data orders",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -57,14 +57,14 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Azure_orders",
+						"referenceName": "DS_azure_raw_orders",
 						"type": "DatasetReference"
 					}
 				]
 			}
 		],
 		"folder": {
-			"name": "consolidated to Azure"
+			"name": "Azure DB tables/raw_tables"
 		},
 		"annotations": [],
 		"lastPublishTime": "2024-08-27T07:46:02Z"
