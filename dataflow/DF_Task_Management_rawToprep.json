@@ -12,7 +12,7 @@
 						"referenceName": "DS_destination_sqlServer",
 						"type": "DatasetReference"
 					},
-					"name": "phaseTableSource"
+					"name": "tableSource"
 				}
 			],
 			"sinks": [
@@ -21,41 +21,21 @@
 						"referenceName": "DS_Task_management_rawToprep",
 						"type": "DatasetReference"
 					},
-					"name": "phaseTableSink"
+					"name": "tableSink"
 				}
 			],
 			"transformations": [
 				{
-					"name": "removeDuplicates",
-					"description": "remove duplicate rows"
-				},
-				{
-					"name": "selectAllColumns",
-					"description": "remove extra created aggregate column"
+					"name": "cleanDateTime"
 				}
 			],
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> phaseTableSource",
-				"phaseTableSource aggregate(groupBy({*} = id,",
-				"          project_title,",
-				"          project_description,",
-				"          project_deadline_date,",
-				"          project_updated_date),",
-				"     recordCounter = sum(id)) ~> removeDuplicates",
-				"removeDuplicates select(mapColumn(",
-				"          id = {*},",
-				"          project_title,",
-				"          project_description,",
-				"          project_deadline_date,",
-				"          project_updated_date,",
-				"          recordCounter",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> selectAllColumns",
-				"selectAllColumns sink(allowSchemaDrift: true,",
+				"     format: 'table') ~> tableSource",
+				"tableSource derive(each(match(type=='datetime2'), $$ = toDate(split(toString($$),'T')[0]))) ~> cleanDateTime",
+				"cleanDateTime sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -65,7 +45,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> phaseTableSink"
+				"     errorHandlingOption: 'stopOnFirstError') ~> tableSink"
 			]
 		}
 	}
