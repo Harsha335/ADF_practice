@@ -1,14 +1,17 @@
 {
-	"name": "DestinationDataset_rvt",
+	"name": "DS_destination_sqlServer",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSqlDatabase_assessment",
+			"referenceName": "AzureSqlDatabase_Task_management",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
 			"cw_table": {
 				"type": "String"
 			}
+		},
+		"folder": {
+			"name": "Task_Management_project"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
