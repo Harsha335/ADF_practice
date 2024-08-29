@@ -1,0 +1,48 @@
+{
+	"name": "PL_rawToPrep",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_task_management",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Task_Management_rawToprep",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"phaseTableSink": {
+								"prepTableName": {
+									"value": "@pipeline().parameters.tableName",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"tableName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Task_Management_project/prep tables"
+		},
+		"annotations": []
+	}
+}

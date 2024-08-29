@@ -1,0 +1,72 @@
+{
+	"name": "DF_Task_Management_rawToprep",
+	"properties": {
+		"folder": {
+			"name": "Task_management"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_destination_sqlServer",
+						"type": "DatasetReference"
+					},
+					"name": "phaseTableSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Task_management_rawToprep",
+						"type": "DatasetReference"
+					},
+					"name": "phaseTableSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "removeDuplicates",
+					"description": "remove duplicate rows"
+				},
+				{
+					"name": "selectAllColumns",
+					"description": "remove extra created aggregate column"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> phaseTableSource",
+				"phaseTableSource aggregate(groupBy({*} = id,",
+				"          project_title,",
+				"          project_description,",
+				"          project_deadline_date,",
+				"          project_updated_date),",
+				"     recordCounter = sum(id)) ~> removeDuplicates",
+				"removeDuplicates select(mapColumn(",
+				"          id = {*},",
+				"          project_title,",
+				"          project_description,",
+				"          project_deadline_date,",
+				"          project_updated_date,",
+				"          recordCounter",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectAllColumns",
+				"selectAllColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> phaseTableSink"
+			]
+		}
+	}
+}

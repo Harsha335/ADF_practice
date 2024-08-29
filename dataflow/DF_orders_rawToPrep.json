@@ -2,7 +2,7 @@
 	"name": "DF_orders_rawToPrep",
 	"properties": {
 		"folder": {
-			"name": "rawToPrep"
+			"name": "assessment_1/rawToPrep"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {

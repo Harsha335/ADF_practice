@@ -2,7 +2,7 @@
 	"name": "DF_reporting",
 	"properties": {
 		"folder": {
-			"name": "prepToReporting"
+			"name": "assessment_1/prepToReporting"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {

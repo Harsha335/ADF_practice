@@ -1,25 +1,25 @@
 {
-	"name": "DS_source_localPostgres",
+	"name": "DS_Task_management_rawToprep",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Local_PostgreSql",
+			"referenceName": "AzureSqlDatabase_Task_management",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"cw_table": {
-				"type": "String"
+			"prepTableName": {
+				"type": "string"
 			}
 		},
 		"folder": {
 			"name": "Task_Management_project"
 		},
 		"annotations": [],
-		"type": "PostgreSqlV2Table",
+		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "public",
+			"schema": "prep",
 			"table": {
-				"value": "@dataset().cw_table",
+				"value": "@dataset().prepTableName",
 				"type": "Expression"
 			}
 		}
