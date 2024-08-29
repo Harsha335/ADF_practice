@@ -34,7 +34,7 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> tableSource",
-				"tableSource derive(each(match(type=='datetime2'), $$ = toDate(split(toString($$),'T')[0]))) ~> cleanDateTime",
+				"tableSource derive(each(match(type=='datetime2'), $$ = toDate(toString($$,'yyyy-MM-dd')))) ~> cleanDateTime",
 				"cleanDateTime sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
