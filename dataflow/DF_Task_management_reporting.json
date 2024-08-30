@@ -1,0 +1,124 @@
+{
+	"name": "DF_Task_management_reporting",
+	"properties": {
+		"folder": {
+			"name": "Task_management"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Task_management_rawToprep",
+						"type": "DatasetReference"
+					},
+					"name": "sourceProjectTable"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Task_management_rawToprep",
+						"type": "DatasetReference"
+					},
+					"name": "sourceTaskTable"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Task_management_reporting",
+						"type": "DatasetReference"
+					},
+					"name": "sinkToReportingResultTaskManagement"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinProjectTaskTables"
+				},
+				{
+					"name": "getProjectTasksCompleted"
+				},
+				{
+					"name": "renameTaskID"
+				},
+				{
+					"name": "getProjectStatus"
+				},
+				{
+					"name": "dropTaskUpdateDate"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          project_title as string,",
+				"          project_description as string,",
+				"          project_deadline_date as timestamp,",
+				"          project_updated_date as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceProjectTable",
+				"source(output(",
+				"          id as integer,",
+				"          task_title as string,",
+				"          task_description as string,",
+				"          priority as string,",
+				"          phase_id as integer,",
+				"          project_id as integer,",
+				"          task_deadline_date as timestamp,",
+				"          task_updated_date as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceTaskTable",
+				"sourceProjectTable, renameTaskID join(id == project_id,",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinProjectTaskTables",
+				"joinProjectTaskTables aggregate(groupBy(id),",
+				"     completedTasks = countIf(phase_id == 5, 1),",
+				"          totalTasks = count(task_id),",
+				"          maxTaskUpdatedDate = max(task_updated_date),",
+				"          projectDeadlineDate = max(project_deadline_date)) ~> getProjectTasksCompleted",
+				"sourceTaskTable select(mapColumn(",
+				"          task_id = id,",
+				"          task_title,",
+				"          task_description,",
+				"          priority,",
+				"          phase_id,",
+				"          project_id,",
+				"          task_deadline_date,",
+				"          task_updated_date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> renameTaskID",
+				"getProjectTasksCompleted derive(status = iif(completedTasks != 0 && completedTasks == totalTasks && maxTaskUpdatedDate <= projectDeadlineDate,    'Completed',    iif(        currentUTC() > projectDeadlineDate,        'Backlog',        'In Progress'    )),",
+				"          completionPercentage = iif(completedTasks == 0 , toDouble(0) , toDouble((completedTasks / totalTasks) * 100))) ~> getProjectStatus",
+				"getProjectStatus select(mapColumn(",
+				"          id,",
+				"          completedTasks,",
+				"          totalTasks,",
+				"          projectDeadlineDate,",
+				"          status,",
+				"          completionPercentage",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> dropTaskUpdateDate",
+				"dropTaskUpdateDate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkToReportingResultTaskManagement"
+			]
+		}
+	}
+}

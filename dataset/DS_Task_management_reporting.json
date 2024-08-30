@@ -1,0 +1,27 @@
+{
+	"name": "DS_Task_management_reporting",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase_Task_management",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"reportingTableName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Task_Management_project"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "reporting",
+			"table": {
+				"value": "@dataset().reportingTableName",
+				"type": "Expression"
+			}
+		}
+	}
+}
